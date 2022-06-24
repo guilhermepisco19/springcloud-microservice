@@ -1,19 +1,27 @@
 package com.guilhermepisco.studentservice.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import com.guilhermepisco.studentservice.dto.StudentDTO;
 import com.guilhermepisco.studentservice.dto.StudentNewDTO;
+import com.guilhermepisco.studentservice.entity.Address;
 import com.guilhermepisco.studentservice.entity.Student;
 import com.guilhermepisco.studentservice.repository.StudentRepository;
+
+import reactor.core.publisher.Mono;
 
 @Service
 public class StudentService {
 
-	StudentRepository studentRepository;
+	private StudentRepository studentRepository;
+	
+	private WebClient webClient;
 
 	
-	public StudentService(StudentRepository studentRepository) {
+	public StudentService(StudentRepository studentRepository, WebClient webClient) {
 		this.studentRepository = studentRepository;
+		this.webClient = webClient;
 	}
 
 	public Student createStudent(StudentNewDTO obj) {
@@ -29,7 +37,16 @@ public class StudentService {
 		return student;
 	}
 	
-	public Student getById (long id) {
-		return studentRepository.findById(id).get();
+	public StudentDTO getById (long id) {
+		Student student = studentRepository.findById(id).get();
+		Address address = getAddressByID(student.getAddressId());
+		
+		return new StudentDTO(student, address);
+	}
+	
+	public Address getAddressByID(long id) {
+		Mono<Address> address = webClient.get().uri("/"+id).retrieve().bodyToMono(Address.class);
+		
+		return address.block();
 	}
 }

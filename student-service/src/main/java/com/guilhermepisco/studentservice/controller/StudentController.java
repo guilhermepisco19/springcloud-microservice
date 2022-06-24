@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.guilhermepisco.studentservice.dto.StudentDTO;
 import com.guilhermepisco.studentservice.dto.StudentNewDTO;
 import com.guilhermepisco.studentservice.entity.Student;
 import com.guilhermepisco.studentservice.service.StudentService;
@@ -27,7 +28,7 @@ public class StudentController extends AbstractController{
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Student> getById (@PathVariable long id) {
+	public ResponseEntity<StudentDTO> getById (@PathVariable long id) {
 		return ResponseEntity.ok(studentService.getById(id));
 	}
 	
