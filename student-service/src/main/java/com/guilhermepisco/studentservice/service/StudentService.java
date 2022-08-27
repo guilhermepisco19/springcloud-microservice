@@ -7,6 +7,7 @@ import com.guilhermepisco.studentservice.dto.StudentDTO;
 import com.guilhermepisco.studentservice.dto.StudentNewDTO;
 import com.guilhermepisco.studentservice.entity.Address;
 import com.guilhermepisco.studentservice.entity.Student;
+import com.guilhermepisco.studentservice.feignclients.AddressFeignClient;
 import com.guilhermepisco.studentservice.repository.StudentRepository;
 
 import reactor.core.publisher.Mono;
@@ -18,10 +19,12 @@ public class StudentService {
 	
 	private WebClient webClient;
 
+	private AddressFeignClient addressFeignClient;
 	
-	public StudentService(StudentRepository studentRepository, WebClient webClient) {
+	public StudentService(StudentRepository studentRepository, WebClient webClient, AddressFeignClient addressFeignClient) {
 		this.studentRepository = studentRepository;
 		this.webClient = webClient;
+		this.addressFeignClient = addressFeignClient;
 	}
 
 	public Student createStudent(StudentNewDTO obj) {
@@ -39,7 +42,8 @@ public class StudentService {
 	
 	public StudentDTO getById (long id) {
 		Student student = studentRepository.findById(id).get();
-		Address address = getAddressByID(student.getAddressId());
+		//Address address = getAddressByID(student.getAddressId());
+		Address address = addressFeignClient.getById(student.getAddressId()).getBody();
 		
 		return new StudentDTO(student, address);
 	}
