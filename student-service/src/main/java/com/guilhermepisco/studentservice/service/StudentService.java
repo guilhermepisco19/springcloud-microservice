@@ -49,10 +49,15 @@ public class StudentService {
 		return new StudentDTO(student, address);
 	}
 	
-	@CircuitBreaker(name = "addressService")
+	@CircuitBreaker(name = "addressService",
+			fallbackMethod = "fallbackGetAddressById")
 	public Address getAddressByID(long id) {
 		/*Mono<Address> address = webClient.get().uri("/"+id).retrieve().bodyToMono(Address.class);
 		return address.block();*/
 		return addressFeignClient.getById(id).getBody();
+	}
+	
+	public Address fallbackGetAddressById(long id) {
+		return new Address();
 	}
 }
