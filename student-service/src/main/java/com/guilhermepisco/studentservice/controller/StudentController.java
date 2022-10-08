@@ -1,5 +1,7 @@
 package com.guilhermepisco.studentservice.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,8 @@ import com.guilhermepisco.studentservice.service.StudentService;
 @RequestMapping("/api/student")
 public class StudentController extends AbstractController{
 	
+	static final Logger LOG = LoggerFactory.getLogger(StudentController.class);
+	
 	@Autowired
 	StudentService studentService;
 	
@@ -29,6 +33,7 @@ public class StudentController extends AbstractController{
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<StudentDTO> getById (@PathVariable long id) {
+		LOG.info("Retrieving student with ID : " + id);
 		return ResponseEntity.ok(studentService.getById(id));
 	}
 	
