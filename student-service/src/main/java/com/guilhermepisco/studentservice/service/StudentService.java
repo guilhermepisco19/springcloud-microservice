@@ -10,6 +10,7 @@ import com.guilhermepisco.studentservice.entity.Student;
 import com.guilhermepisco.studentservice.feignclients.AddressFeignClient;
 import com.guilhermepisco.studentservice.repository.StudentRepository;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -43,14 +44,15 @@ public class StudentService {
 	public StudentDTO getById (long id) {
 		Student student = studentRepository.findById(id).get();
 		//Address address = getAddressByID(student.getAddressId());
-		Address address = addressFeignClient.getById(student.getAddressId()).getBody();
+		Address address = getAddressByID(student.getAddressId());
 		
 		return new StudentDTO(student, address);
 	}
 	
+	@CircuitBreaker(name = "addressService")
 	public Address getAddressByID(long id) {
-		Mono<Address> address = webClient.get().uri("/"+id).retrieve().bodyToMono(Address.class);
-		
-		return address.block();
+		/*Mono<Address> address = webClient.get().uri("/"+id).retrieve().bodyToMono(Address.class);
+		return address.block();*/
+		return addressFeignClient.getById(id).getBody();
 	}
 }
