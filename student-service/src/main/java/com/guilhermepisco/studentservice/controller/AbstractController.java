@@ -8,7 +8,7 @@ import com.guilhermepisco.studentservice.entity.IEntity;
 
 public abstract class AbstractController {
 	
-	public URI createResourceURI(IEntity obj) {
+	public URI createResourceURI(IEntity<?> obj) {
 		return ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}").buildAndExpand(obj.getId()).toUri();
 	}

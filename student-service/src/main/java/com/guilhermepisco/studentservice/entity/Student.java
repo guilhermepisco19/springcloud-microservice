@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "student")
-public class Student implements IEntity{
+public class Student implements IEntity<Long>{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

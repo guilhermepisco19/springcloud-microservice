@@ -1,10 +1,10 @@
 package com.guilhermepisco.studentservice.entity;
 
-public interface IEntity {
+public interface IEntity<T> {
 
 	
-	public Long getId();
+	public T getId();
 
-	public void setId(Long id);
+	public void setId(T id);
 
 }
